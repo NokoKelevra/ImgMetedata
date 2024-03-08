@@ -1,8 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #-*- coding: UTF-8 -*-
 import sys
+import argparse
 from PIL.ExifTags import TAGS
 from PIL import Image
+
+parser = argparse.ArgumentParser(prog='Metadata.py', description='Script para extraer los metadatos de imagenes', epilog='')
+parser.add_argument("-f", "--file", help="Imagen a procesar en formato jpeg o png")
+
+parser.parse_args()
+args = parser.parse_args()
 
 def testForExif(imgFile):
 	exifData = {}
@@ -19,12 +26,16 @@ def imprimirDatos(datos):
 	for campo,valor in datos.items():
 		print('[+] ' + str(campo) + ' : ' + str(valor))
 
-photo = Image.open(sys.argv[1])
-if (photo.format == 'JPEG'):
-	metadatos = testForExif(photo)
-	if (metadatos):
-		imprimirDatos(metadatos)
-elif (photo.format == 'PNG'):
-	imprimirDatos(photo.info)
-else:
-	print("Introduce una imagen con extensión JPEG o PNG")
+def main():
+	photo = Image.open(args.file)
+	if (photo.format == 'JPEG'):
+		metadatos = testForExif(photo)
+		if (metadatos):
+			imprimirDatos(metadatos)
+	elif (photo.format == 'PNG'):
+		imprimirDatos(photo.info)
+	else:
+		print("Introduce una imagen con extensión JPEG o PNG")
+
+if __name__ == "__main__":
+    main()
